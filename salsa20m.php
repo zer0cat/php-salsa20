@@ -1,11 +1,11 @@
 <?php
 error_reporting(-1);
-// $s = new Salsa20(hex2bin("a8fe0b92710fde99bd12672152b2ac91fd1c0843df9a5c9baa08589fc37e55ba"),hex2bin("ca50c323e91aa237"));
-// $e = $s->encrypt(bin2hex('php is great'));
-// var_dump(bin2hex($e));
-// $xxx = str_repeat('a',256);
-// $ss = $s->encrypt($xxx);
-// var_dump(bin2hex($ss));
+$s = new Salsa20(hex2bin("a8fe0b92710fde99bd12672152b2ac91fd1c0843df9a5c9baa08589fc37e55ba"),hex2bin("ca50c323e91aa237"));
+$e = $s->encrypt(bin2hex('php is great'));
+var_dump(bin2hex($e));
+$xxx = str_repeat('a',256);
+$ss = $s->encrypt($xxx);
+var_dump(bin2hex($ss));
 
 
 class Salsa20
@@ -76,9 +76,12 @@ public function ROL32($a,$b)
 public function xXor($stream, $din)
 	{
 	$dout = "";
-		for($i=0;$i<strlen($din);$i++) #for i in range(len(din)):
-		{ $dout[$i] = $stream[$i] ^ $din[$i]; } #dout.append(stream[i]^din[i])
-		return $dout;	
+	for($i=0,$l = strlen($din);$i<$l;$i++) #for i in range(len(din)):
+		{ 
+		#$dout[$i] = $stream[$i] ^ $din[$i]; error in php 7.0, because produce array 
+		$dout .= $stream[$i] ^ $din[$i];#dout.append(stream[i]^din[i])
+		} 
+	return $dout;	
 	}	
 	
 private function salsa20_scramble()#output must be converted to bytestring before return.
